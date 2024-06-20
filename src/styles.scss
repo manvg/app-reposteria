@@ -1,1 +1,7 @@
-/* You can add global styles to this file, and also import other style files */
+body {
+  background-image: url('/assets/images/background-1.png');
+  background-size: cover; /* Para que la imagen cubra toda la pantalla */
+  background-repeat: no-repeat; /* Para que la imagen no se repita */
+  background-attachment: fixed; /* Para que la imagen permanezca fija al hacer scroll */
+  background-position: center center; /* Para centrar la imagen */
+}

@@ -1,10 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
-body {
-    background: url('/assets/images/background-1.png') no-repeat center center fixed; /* Asegura que la ruta sea correcta */
-    background-size: cover; /* Para que la imagen cubra toda la pantalla */
-}
-
 /* Galeria Carousel Inicio*/
 .carousel-item {
     display: flex;
@@ -34,41 +29,6 @@ body {
     }
 }
 
-/* Menu */
-.navbar{
-    background-color: rgba(212, 130, 166, 0.8); /* Utiliza RGBA para añadir transparencia */
-}
-.custom-nav-text .nav-link {
-    color: #ffffff; /* Color de la letra */
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    font-size: 18px; /* Tamaño de la letra */
-    font-weight: 400; /* Peso de la letra */
-    text-transform: uppercase; /* Transformación del texto */
-    padding: 10px 20px; /* Espaciado interno */
-    text-decoration: none; /* Quita el subrayado por defecto */
-}
-
-.custom-nav-text .nav-link:hover {
-    color: black; /* Color al pasar el mouse por encima */
-    font-weight: 100; /* Peso de la letra al pasar el mouse */
-}
-
-.custom-nav-text .nav-link.active {
-    color: black; /* Color de la letra activa */
-    font-weight: 100; /* Peso de la letra activa */
-    text-decoration: underline; /* Subraya el texto activo */
-}
-
-.navbar-brand img {
-    height: 60px; /* Altura de la imagen */
-}
-.navbar-brand {
-    margin-right: 20px; /* Espaciado a la derecha de la marca */
-}
-.navbar-nav .nav-item {
-    margin: 0 15px; /* Ajusta el valor para más o menos espacio */
-}
-
 /* Modificar estilo clase 'Card' */
 .card {
     background-color: transparent; /* Fondo transparente para la tarjeta */
@@ -82,40 +42,6 @@ body {
 .card-body h5,
 .card-body .btn {
     opacity: 1; /* Restablece la opacidad a 1 para el título y el botón dentro del cuerpo de la tarjeta */
-}
-
-/* Formulario login */
-.login-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
-.login-container {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-.login-container h2 {
-    margin-bottom: 20px;
-}
-
-/* Formulario de registro */
-.registro-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
-.registro-container {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-.registro-container h2 {
-    margin-bottom: 20px;
 }
 
 /* Carrito de compras */
