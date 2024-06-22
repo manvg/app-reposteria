@@ -1,4 +1,7 @@
-<app-menu></app-menu>
+<app-menu (carritoClicked)="toggleCarrito()"></app-menu>
+
+<app-carrito *ngIf="carritoVisible" (closeCarrito)="closeCarrito()"></app-carrito>
+
 <div class="container mt-4 text-center">
   <div class="row title-row">
     <div class="col-md-12">
