@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+// @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap');
 
 /* Galeria Carousel Inicio*/
 .carousel-item {
@@ -51,88 +52,6 @@
 .bi .bi-cart{
     height: 20px;
 }
-.cart-products {
-    display: none;
-    position: fixed;
-    right: 0;
-    top: 0;
-    width: 300px;
-    height: 100%;
-    background: white;
-    box-shadow: -2px 0 5px rgba(0,0,0,0.5);
-    z-index: 1000;
-    padding: 20px;
-    overflow-y: auto;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-}
-
-.cart-products .close-btn {
-    cursor: pointer;
-    text-align: right;
-    font-size: 1.2em;
-    margin-bottom: 10px;
-}
-
-.cart-products h3 {
-    font-size: 1.5em;
-    margin-bottom: 20px;
-}
-
-.cart-products .item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #ddd;
-}
-
-.cart-products .item img {
-    width: 50px;
-    height: 50px;
-    object-fit: cover;
-}
-
-.cart-products .item-content {
-    flex: 1;
-    margin-left: 10px;
-    font-size: 0.9em;
-}
-
-.cart-products .item-content h5 {
-    margin: 0;
-    font-size: 1em;
-}
-
-.cart-products .item-content h6 {
-    margin: 0;
-    font-size: 0.8em;
-}
-
-.cart-products .delete-product {
-    cursor: pointer;
-    color: red;
-}
-
-.cart-products h2 {
-    font-size: 1.2em;
-    margin-top: 20px;
-}
-
-.cart-products .btn {
-    font-size: 1em;
-}
-
-.contador-carrito {
-    position: absolute;
-    background-color: #ff0000;
-    color: #ffffff;
-    padding: .15rem .25rem;
-    border-radius: .25rem;
-    font-size: 12px;
-    font-weight: bold;
-}
-
 /* Productos */
 .contenedor-productos{
     background-color: rgba(255, 255, 255, 0.8);
