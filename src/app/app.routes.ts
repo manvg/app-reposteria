@@ -4,6 +4,7 @@ import { TortasComponent } from './components/tortas/tortas.component';
 import { CheesecakesComponent } from './components/cheesecakes/cheesecakes.component';
 import { KuchensComponent } from './components/kuchens/kuchens.component';
 import { TartaletasComponent } from './components/tartaletas/tartaletas.component';
+import { RegistroComponent } from './components/registro/registro.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/index', pathMatch: 'full' },
@@ -11,5 +12,6 @@ export const routes: Routes = [
   {path: 'tortas', component: TortasComponent},
   {path: 'cheesecakes', component: CheesecakesComponent},
   {path: 'kuchens', component: KuchensComponent},
-  {path: 'tartaletas', component: TartaletasComponent}
+  {path: 'tartaletas', component: TartaletasComponent},
+  {path: 'registro', component: RegistroComponent}
 ];
