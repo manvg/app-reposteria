@@ -65,7 +65,7 @@ export class LocalStorageService {
       this.crearUsuarioAdminPorDefecto();
     }else{
       usuariosGuardados.forEach(element => {
-        console.log('local-storage.service.ts => listarUsuarios() => ' + element.email);
+        console.log('local-storage.service.ts => listarUsuarios() => ' + element.email + ' | ' + element.contrasena);
       });
     }
   }

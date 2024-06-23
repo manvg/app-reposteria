@@ -10,30 +10,31 @@ import { Usuario } from '../../models/usuario.models';
 @Component({
   selector: 'app-mi-cuenta',
   standalone: true,
-  imports: [CommonModule, RouterModule,ReactiveFormsModule, MenuComponent, FooterComponent, CarritoComponent],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, MenuComponent, FooterComponent, CarritoComponent],
   templateUrl: './mi-cuenta.component.html',
   styleUrl: './mi-cuenta.component.scss'
 })
 export class MiCuentaComponent {
   miCuentaForm!: FormGroup;
   cambiarContrasenaForm!: FormGroup;
-  enviado = false;
+  enviadoDatosPersonales = false;
+  enviadoCambiarContrasena = false;
   carritoVisible: boolean = false;
 
-  constructor(private fb: FormBuilder, private localStorageService: LocalStorageService, private router: Router) {}
+  constructor(private fb: FormBuilder, private localStorageService: LocalStorageService, private router: Router) { }
 
   ngOnInit(): void {
     this.miCuentaForm = this.fb.group({
-      nombre: ['', [Validators.required]],
-      apellidos: ['', [Validators.required]],
-      direccion: ['', [Validators.required]],
-      telefono: ['', [Validators.required, Validators.maxLength(9), this.soloNumerosValidator()]],
-      fechaNacimiento: ['', {validators: [Validators.required, this.validarEdad(18)], updateOn: 'change'}],
+      nombre: ['', { validators: [Validators.required, this.soloLetrasValidator()], updateOn: 'change' }],
+      apellidos: ['', { validators: [Validators.required, this.soloLetrasValidator()], updateOn: 'change' }],
+      fechaNacimiento: ['', { validators: [Validators.required, this.validarEdad(18)], updateOn: 'change' }],
+      direccion: ['', { validators: [this.alphanumericoValidator()], updateOn: 'change' }],
+      telefono: ['', { validators: [Validators.required, this.soloNumerosValidator()], updateOn: 'change' }]
     });
 
     this.cambiarContrasenaForm = this.fb.group({
-      contrasenaActual: ['', [Validators.required]],
-      nuevaContrasena: ['', [Validators.required, Validators.maxLength(18), this.validarContraseña()]]
+      contrasenaActual: ['', [Validators.required, this.validarContrasenaActual()]],
+      nuevaContrasena: ['', { validators: [Validators.required, this.validarContrasena()], updateOn: 'change' }]
     });
 
     this.obtenerDatosUsuario();
@@ -48,7 +49,7 @@ export class MiCuentaComponent {
   }
 
   onGuardarDatosPersonales(): void {
-    this.enviado = true;
+    this.enviadoDatosPersonales = true;
     if (this.miCuentaForm.valid) {
       const usuarioActivo: Usuario | null = this.localStorageService.obtenerUsuarioActivo();
       if (usuarioActivo) {
@@ -67,7 +68,7 @@ export class MiCuentaComponent {
           usuarios[index] = usuarioActivo;
           this.localStorageService.setItem('usuarios', JSON.stringify(usuarios));
         }
-
+        this.enviadoDatosPersonales = false;
         alert('Datos personales actualizados correctamente.');
       } else {
         alert('No se encontró el usuario activo.');
@@ -78,19 +79,25 @@ export class MiCuentaComponent {
   }
 
   onGuardarNuevaContrasena(): void {
+    this.enviadoCambiarContrasena = true;
     if (this.cambiarContrasenaForm.valid) {
       const usuarioActivo: Usuario | null = this.localStorageService.obtenerUsuarioActivo();
       if (usuarioActivo) {
-        //Valida contraseña actual
         const contrasenaActual = this.cambiarContrasenaForm.get('contrasenaActual')!.value;
+        const nuevaContrasena = this.cambiarContrasenaForm.get('nuevaContrasena')!.value;
 
-        if(contrasenaActual !== usuarioActivo.contrasena){
+        //Valida contraseña actual
+        if (contrasenaActual !== usuarioActivo.contrasena) {
           alert('La contraseña actual ingresada es incorrecta.');
           return;
         }
-        //Actualizar contraseña
-        const nuevaContrasena = this.cambiarContrasenaForm.get('nuevaContrasena')!.value;
+        //Validar que la nueva contraseña no sea igual a la contraseña actual
+        if (nuevaContrasena === usuarioActivo.contrasena) {
+          alert('La nueva contraseña debe ser distinta a la actual.');
+          return;
+        }
 
+        //Actualizar contraseña
         usuarioActivo.contrasena = nuevaContrasena;
 
         this.localStorageService.setItem('usuarioActivo', JSON.stringify(usuarioActivo));
@@ -102,18 +109,20 @@ export class MiCuentaComponent {
           this.localStorageService.setItem('usuarios', JSON.stringify(usuarios));
         }
 
+        this.enviadoCambiarContrasena = false;
+        this.cambiarContrasenaForm.reset();
+
         alert('Contraseña actualizada correctamente.');
+
       } else {
         alert('No se encontró el usuario.');
       }
-    } else {
-      this.cambiarContrasenaForm.markAllAsTouched();
     }
   }
 
-  obtenerDatosUsuario(): void{
+  obtenerDatosUsuario(): void {
     const usuarioActivo: Usuario | null = this.localStorageService.obtenerUsuarioActivo();
-    if(usuarioActivo){
+    if (usuarioActivo) {
       //Cargar campos en Editar Datos Personales
       this.miCuentaForm.patchValue({
         nombre: usuarioActivo.nombre,
@@ -127,8 +136,7 @@ export class MiCuentaComponent {
         contrasenaActual: '',
         nuevaContrasena: ''
       });
-    }else{
-      alert('No existe un usuario activo. Cerrando sesión...');
+    } else {
       this.localStorageService.cerrarSesion();
       this.router.navigate(['/index']);
     }
@@ -146,24 +154,26 @@ export class MiCuentaComponent {
     }
   }
 
-  soloNumerosValidator(): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
-      const regex = /^[0-9]+$/;
-      if (control.value && !regex.test(control.value)) {
-        return { soloNumeros: 'Sólo se permiten números' };
+  //#region Validaciones
+  getErrorMessage(control: AbstractControl | null): string {
+    if (control?.errors) {
+      if (control.errors['required']) {
+        return 'Este campo es obligatorio.';
       }
-      return null;
-    };
+    }
+    return '';
   }
 
-  validarContraseña(): ValidatorFn {
+  //#region Validación contraseña
+  validarContrasena(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const contrasena = control.value;
       if (!contrasena) {
-        return null;
+        return null; // Si no hay contraseña, no validar
       }
 
       const errors: ValidationErrors = {};
+
       if (contrasena.length < 6 || contrasena.length > 18) {
         errors['length'] = 'Largo entre 6 y 18 caracteres';
       }
@@ -174,34 +184,97 @@ export class MiCuentaComponent {
         errors['number'] = 'Debe contener al menos un número';
       }
 
+      const usuarioActivo: Usuario | null = this.localStorageService.obtenerUsuarioActivo();
+      if (usuarioActivo) {
+        if (contrasena === usuarioActivo.contrasena) {
+          errors['contrasenaRepetida'] = 'La nueva contraseña debe ser distinta a la actual.';
+        }
+      }
       return Object.keys(errors).length ? errors : null;
     };
   }
 
-    //#region Validación edad
-    calcularEdad(fechaNacimiento: Date): number {
-      const hoy = new Date();
-      let edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
-      const mes = hoy.getMonth() - fechaNacimiento.getMonth();
-      if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNacimiento.getDate())) {
-        edad--;
+  validarContrasenaActual(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const contrasenaActual = control.value;
+      if (!contrasenaActual) {
+        return null; // Si no hay contraseña, no validar
       }
-      return edad;
+      const usuarioActivo: Usuario | null = this.localStorageService.obtenerUsuarioActivo();
+      const errors: ValidationErrors = {};
+
+      if (usuarioActivo) {
+        if (contrasenaActual !== usuarioActivo.contrasena) {
+          errors['validarContrasenaActual'] = 'Contraseña actual incorrecta.';
+        }
+      }
+
+      return Object.keys(errors).length ? errors : null;
+    };
+  }
+  //#endregion
+
+  //#region Validación edad
+  calcularEdad(fechaNacimiento: Date): number {
+    const hoy = new Date();
+    let edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
+    const mes = hoy.getMonth() - fechaNacimiento.getMonth();
+    if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNacimiento.getDate())) {
+      edad--;
     }
+    return edad;
+  }
 
-    validarEdad(edadMinima: number): ValidatorFn {
-      return (control: AbstractControl): ValidationErrors | null => {
-        const fechaNacimiento = control.value;
-        if (!fechaNacimiento) {
-          return null;
-        }
-
-        const edad = this.calcularEdad(new Date(fechaNacimiento));
-        if (edad < edadMinima) {
-          return { menorEdad: true };
-        }
+  validarEdad(edadMinima: number): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const fechaNacimiento = control.value;
+      if (!fechaNacimiento) {
         return null;
-      };
-    }
-    //#endregion
+      }
+
+      const edad = this.calcularEdad(new Date(fechaNacimiento));
+      if (edad < edadMinima) {
+        return { menorEdad: 'Debes ser mayor de 18 años.' };
+      }
+      return null;
+    };
+  }
+  //#endregion
+
+  //#region Validaciones ingreso de texto y números
+  soloLetrasValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const regex = /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s-]+$/;
+      if (control.value && !regex.test(control.value)) {
+        control.setValue(control.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s-]/g, ''));
+        return { soloLetras: 'Sólo se permiten letras' };
+      }
+      return null;
+    };
+  }
+
+  alphanumericoValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const regex = /^[a-zA-Z0-9áéíóúÁÉÍÓÚüÜñÑ\s-]+$/;
+      if (control.value && !regex.test(control.value)) {
+        control.setValue(control.value.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚüÜñÑ\s-]/g, ''))
+        return { alphanumerico: 'Sólo se permiten caracteres alfanuméricos' };
+      }
+      return null;
+    };
+  }
+
+  soloNumerosValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const regex = /^[0-9]+$/;
+      if (control.value && !regex.test(control.value)) {
+        control.setValue(control.value.replace(/[^0-9]/g, ''));
+        return { soloNumeros: 'Sólo se permiten números' };
+      }
+      return null;
+    };
+  }
+  //#endregion
+
+  //#endregion
 }
