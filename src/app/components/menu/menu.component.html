@@ -26,12 +26,12 @@
         </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <span id="nombreUsuarioCuenta">Mi cuenta</span>
+            <span id="nombreUsuarioCuenta">{{ usuarioActual ? usuarioActual.nombre : 'Mi cuenta' }}</span>
           </a>
           <ul class="dropdown-menu">
-            <li class="inicio-sesion"><a class="dropdown-item" routerLink="/login">Iniciar sesión</a></li>
-            <li class="registro-usuario"><a class="dropdown-item" routerLink="/registro">Registrarse</a></li>
-            <li class="cerrar-sesion"><a class="dropdown-item" id="btnCerrarSesion" href="#">Cerrar sesión</a></li>
+            <li class="inicio-sesion" *ngIf="!usuarioActual"><a class="dropdown-item" routerLink="/login">Iniciar sesión</a></li>
+            <li class="registro-usuario" *ngIf="!usuarioActual"><a class="dropdown-item" routerLink="/registro">Registrarse</a></li>
+            <li class="cerrar-sesion" *ngIf="usuarioActual"><a class="dropdown-item" id="btnCerrarSesion" (click)="cerrarSesion()">Cerrar sesión</a></li>
           </ul>
         </li>
         <li class="nav-item" style="cursor: pointer;">

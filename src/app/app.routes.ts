@@ -5,6 +5,8 @@ import { CheesecakesComponent } from './components/cheesecakes/cheesecakes.compo
 import { KuchensComponent } from './components/kuchens/kuchens.component';
 import { TartaletasComponent } from './components/tartaletas/tartaletas.component';
 import { RegistroComponent } from './components/registro/registro.component';
+import { LoginComponent } from './components/login/login.component';
+import { MiCuentaComponent } from './components/mi-cuenta/mi-cuenta.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/index', pathMatch: 'full' },
@@ -13,5 +15,7 @@ export const routes: Routes = [
   {path: 'cheesecakes', component: CheesecakesComponent},
   {path: 'kuchens', component: KuchensComponent},
   {path: 'tartaletas', component: TartaletasComponent},
-  {path: 'registro', component: RegistroComponent}
+  {path: 'registro', component: RegistroComponent},
+  {path: 'login', component: LoginComponent},
+  {path: 'mi-cuenta', component: MiCuentaComponent}
 ];

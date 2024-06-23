@@ -1,0 +1,70 @@
+<app-menu (carritoClicked)="toggleCarrito()"></app-menu>
+
+<app-carrito *ngIf="carritoVisible" (closeCarrito)="closeCarrito()"></app-carrito>
+<br>
+
+<div class="container mt-2" style="background-color: white;">
+  <div class="row mt-4">
+    <div class="col-md-3">
+      <div class="tablero mt-4">
+        <div class="tablero-item" (click)="toggleFormulario('datos-personales')" id="btnDatosPersonales">Editar Datos Personales</div>
+        <div class="tablero-item" (click)="toggleFormulario('cambiar-contrasena')" id="btnCambiarContrasena">Cambiar Contraseña</div>
+      </div>
+    </div>
+    <div class="col-md-9">
+      <div id="formulario-datos-personales" style="display: none;">
+        <h4 class="mb-4 mt-4">Datos Personales</h4>
+        <form [formGroup]="miCuentaForm" (ngSubmit)="onGuardarDatosPersonales()" class="needs-validation" novalidate>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="nombre" class="form-label">Nombre <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="nombre" formControlName="nombre">
+              <div *ngIf="miCuentaForm.controls['nombre'].invalid && miCuentaForm.controls['nombre'].touched" class="invalid-feedback">Este campo es obligatorio.</div>
+            </div>
+            <div class="col-md-6">
+              <label for="apellidos" class="form-label">Apellido <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="apellidos" formControlName="apellidos">
+              <div *ngIf="miCuentaForm.controls['apellidos'].invalid && miCuentaForm.controls['apellidos'].touched" class="invalid-feedback">Este campo es obligatorio.</div>
+            </div>
+            <div class="col-md-6">
+              <label for="direccion" class="form-label">Dirección <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="direccion" formControlName="direccion">
+              <div *ngIf="miCuentaForm.controls['direccion'].invalid && miCuentaForm.controls['direccion'].touched" class="invalid-feedback">Este campo es obligatorio.</div>
+            </div>
+            <div class="col-md-6">
+              <label for="telefono" class="form-label">Teléfono <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" maxlength="9" id="telefono" formControlName="telefono">
+              <div *ngIf="miCuentaForm.controls['telefono'].invalid && miCuentaForm.controls['telefono'].touched" class="invalid-feedback">Este campo es obligatorio.</div>
+            </div>
+            <div class="col-12 text-end">
+              <button type="submit" class="btn btn-primary">Guardar cambios</button>
+            </div>
+          </div>
+        </form>
+        <br>
+      </div>
+      <div id="formulario-cambiar-contrasena" style="display: none;">
+        <h4 class="mb-4 mt-4">Cambiar Contraseña</h4>
+        <form [formGroup]="cambiarContrasenaForm" (ngSubmit)="onGuardarNuevaContrasena()" class="needs-validation" novalidate>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="contrasenaActual" class="form-label">Contraseña actual</label>
+              <input type="password" class="form-control" id="contrasenaActual" formControlName="contrasenaActual" maxlength="18">
+              <div *ngIf="cambiarContrasenaForm.controls['contrasenaActual'].invalid && cambiarContrasenaForm.controls['contrasenaActual'].touched" class="invalid-feedback">Este campo es obligatorio.</div>
+            </div>
+            <div class="col-md-6">
+              <label for="nuevaContrasena" class="form-label">Nueva Contraseña</label>
+              <input type="password" class="form-control" id="nuevaContrasena" formControlName="nuevaContrasena" maxlength="18">
+              <div *ngIf="cambiarContrasenaForm.controls['nuevaContrasena'].invalid && cambiarContrasenaForm.controls['nuevaContrasena'].touched" class="invalid-feedback">Este campo es obligatorio.</div>
+            </div>
+            <div class="col-12 text-end">
+              <button type="submit" class="btn btn-primary">Guardar cambios</button>
+            </div>
+          </div>
+          <br>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<app-footer></app-footer>

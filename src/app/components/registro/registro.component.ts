@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MenuComponent } from '../menu/menu.component';
 import { FooterComponent } from '../footer/footer.component';
 import { CarritoComponent } from '../carrito/carrito.component';
-import { CarritoService } from '../../services/carrito.service';
+import { CarritoService } from '../../services/carrito/carrito.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { Usuario } from '../../models/usuario.models';
+import { LocalStorageService } from '../../services/local-storage/local-storage.service';
 
 @Component({
   selector: 'app-registro',
@@ -21,7 +22,7 @@ export class RegistroComponent implements OnInit {
   enviado = false;
   carritoVisible: boolean = false;
 
-  constructor(private carritoService: CarritoService, private fb: FormBuilder) {}
+  constructor(private carritoService: CarritoService, private fb: FormBuilder, private router: Router, private localStorageService: LocalStorageService) {}
 
   toggleCarrito() {
     this.carritoVisible = !this.carritoVisible;
@@ -32,6 +33,7 @@ export class RegistroComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.cargarUsuarios();
     this.formRegistro = this.fb.group({
       nombre: ['', {validators: [Validators.required, this.soloLetrasValidator()], updateOn: 'change'}],
       apellidos: ['', {validators: [Validators.required, this.soloLetrasValidator()], updateOn: 'change'}],
@@ -47,6 +49,12 @@ export class RegistroComponent implements OnInit {
   formularioRegistro() {
     this.enviado = true;
     if (this.formRegistro.valid) {
+      const correo = this.formRegistro.get('correo')!.value;
+      if (this.validarExistenciaUsuario(correo)) {
+        alert('Ya existe un usuario con este correo electrónico');
+        return;
+      }
+
       const nuevoUsuario: Usuario = {
         nombre: this.formRegistro.get('nombre')!.value,
         apellidos: this.formRegistro.get('apellidos')!.value,
@@ -57,14 +65,18 @@ export class RegistroComponent implements OnInit {
         contrasena: this.formRegistro.get('contrasena')!.value,
         perfil: 'cliente'
       };
+
       console.log('Cantidad de usuarios ANTES de guardar => ' + this.arrayUsuarios.length);
       this.arrayUsuarios.push(nuevoUsuario);
+      this.guardarUsuarios();
       this.formRegistro.reset();
       this.enviado = false;
 
       alert('Se guardó correctamente el usuario');
 
       console.log('Cantidad de usuarios DESPUÉS de guardar => ' + this.arrayUsuarios.length);
+
+      this.router.navigate(['/login']);
     }
   }
 
@@ -78,6 +90,45 @@ export class RegistroComponent implements OnInit {
       contrasena: '',
       confirmarContrasena: ''
     });
+  }
+
+  guardarUsuarios() {
+    this.localStorageService.setItem('usuarios', JSON.stringify(this.arrayUsuarios));
+    console.log('guardarUsuarios() => ok');
+  }
+
+  cargarUsuarios() {
+    const usuariosGuardados = this.localStorageService.getItem('usuarios');
+    if (usuariosGuardados) {
+      this.arrayUsuarios = JSON.parse(usuariosGuardados);
+      console.log('Se cargaron los siguientes usuarios en localStorage: ');
+      this.arrayUsuarios.forEach(element => {
+        console.log('Usuario ' + element.email);
+      });
+    }else{
+      this.crearUsuarioAdmin();
+    }
+  }
+
+  crearUsuarioAdmin(){
+    const usuarioAdmin: Usuario = {
+      nombre: 'Manuel',
+      apellidos: 'Valdés Guerra',
+      fechaNacimiento: new Date('1900-01-01'),
+      direccion: '',
+      telefono: 999999999,
+      email: 'admin@gmail.com',
+      contrasena: '1234',
+      perfil: 'admin'
+    };
+
+    this.arrayUsuarios.push(usuarioAdmin);
+    this.localStorageService.setItem('usuarios', JSON.stringify(this.arrayUsuarios));
+    console.log('Usuario administrador creado');
+  }
+
+  validarExistenciaUsuario(correo: string): boolean {
+    return this.arrayUsuarios.some(usuario => usuario.email === correo);
   }
 
   //#region Validación contraseña

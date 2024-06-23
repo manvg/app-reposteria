@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { MenuComponent } from '../menu/menu.component';
 import { FooterComponent } from '../footer/footer.component';
 import { CarritoComponent } from '../carrito/carrito.component';
-import { CarritoService } from '../../services/carrito.service';
+import { CarritoService } from '../../services/carrito/carrito.service';
 import { Producto } from '../../models/producto.model';
 
 @Component({

@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, EventEmitter  } from '@angular/core';
-import { CarritoService } from '../../services/carrito.service';
+import { CarritoService } from '../../services/carrito/carrito.service';
 import { Producto } from '../../models/producto.model';
 import { CommonModule } from '@angular/common';
 
