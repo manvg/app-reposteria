@@ -40,7 +40,7 @@ export class RegistroComponent implements OnInit {
       apellidos: ['', {validators: [Validators.required, this.soloLetrasValidator()], updateOn: 'change'}],
       fechaNacimiento: ['', {validators: [Validators.required, this.validarEdad(18)], updateOn: 'change'}],
       direccion: ['', {validators: [this.alphanumericoValidator()], updateOn: 'change'}],
-      telefono: ['', {validators: [Validators.required, this.soloNumerosValidator()], updateOn: 'change'}],
+      telefono: ['', {validators: [Validators.required, this.soloNumerosValidator(), Validators.minLength(9), Validators.maxLength(9)], updateOn: 'change'}],
       correo: ['', [Validators.required, Validators.email]],
       contrasena: ['', {validators: [Validators.required, this.validarContraseña()],updateOn: 'change'}],
       confirmarContrasena: ['', Validators.required]
@@ -223,6 +223,9 @@ export class RegistroComponent implements OnInit {
       if (control.value && !regex.test(control.value)) {
         control.setValue(control.value.replace(/[^0-9]/g, ''));
         return { soloNumeros: 'Sólo se permiten números' };
+      }
+      if (control.value && control.value.length !== 9) {
+        return { longitudInvalida: 'Debe tener exactamente 9 dígitos' };
       }
       return null;
     };

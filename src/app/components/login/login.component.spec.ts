@@ -35,4 +35,21 @@ describe('LoginComponent', () => {
   it('El componente LOGIN se crea correctamente', () => {
     expect(component).toBeTruthy();
   });
+
+  it('Formulario invalido cuando está vacío', () => {
+    expect(component.formLogin.valid).toBeFalsy();
+  });
+
+  it('Campo email es inválido cuando está vacío', () => {
+    const email = component.formLogin.controls['email'];
+    expect(email.valid).toBeFalsy();
+    expect(email.errors!['required']).toBeTruthy();
+  });
+
+  it('Mostrar error cuando las credenciales son incorrectas', () => {
+    component.formLogin.controls['email'].setValue('prueba@invalida.cl');
+    component.formLogin.controls['contrasena'].setValue('contrasenainvalida');
+    component.iniciarSesion();
+    expect(component.loginError).toBe('Correo o contraseña incorrectos');
+  });
 });
