@@ -7,6 +7,11 @@ import { CarritoComponent } from '../carrito/carrito.component';
 import { CarritoService } from '../../services/carrito/carrito.service';
 import { Producto } from '../../models/producto.model';
 
+/**
+ * @description
+ * Este componente permite visualizar los productos de la categoría 'Cheesecakes' y agregarlos al carrito de compras.
+ *
+ */
 @Component({
   selector: 'app-cheesecakes',
   standalone: true,
@@ -14,7 +19,11 @@ import { Producto } from '../../models/producto.model';
   templateUrl: './cheesecakes.component.html',
   styleUrl: './cheesecakes.component.scss'
 })
-export class CheesecakesComponent {
+export class CheesecakesComponent implements OnInit {
+  /**
+   * @description
+   * Lista de productos de la categoría 'Cheesecakes'
+   */
   productos = [
     {
       id_producto: '5',
@@ -50,22 +59,50 @@ export class CheesecakesComponent {
     },
   ];
 
+  /**
+   * @description
+   * Título de la categoría
+   */
   titulo: string = 'Cheesecakes';
 
+  /**
+   * @description
+   * Bandera para controlar la visibilidad del carrito de compras
+   */
   carritoVisible: boolean = false;
 
+  /**
+   * @ignore
+   */
   constructor(private carritoService: CarritoService) {}
 
-  ngOnInit() {}
+  /**
+   * @description
+   * Inicializa el componente
+   */
+  ngOnInit(): void {}
 
+  /**
+   * @description
+   * Agrega un producto al carrito de compras
+   * @param producto - El producto a agregar
+   */
   agregarProducto(producto: Producto) {
     this.carritoService.agregarProducto(producto);
   }
 
+  /**
+   * @description
+   * Alterna la visibilidad del carrito de compras
+   */
   toggleCarrito() {
     this.carritoVisible = !this.carritoVisible;
   }
 
+  /**
+   * @description
+   * Cierra el carrito de compras
+   */
   closeCarrito() {
     this.carritoVisible = false;
   }

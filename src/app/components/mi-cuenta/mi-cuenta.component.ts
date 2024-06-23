@@ -7,6 +7,11 @@ import { FooterComponent } from '../footer/footer.component';
 import { CarritoComponent } from '../carrito/carrito.component';
 import { LocalStorageService } from '../../services/local-storage/local-storage.service';
 import { Usuario } from '../../models/usuario.models';
+
+/**
+ * @description
+ * Este componente permite gestionar la cuenta del usuario, incluyendo la edición de datos personales y el cambio de contraseña.
+ */
 @Component({
   selector: 'app-mi-cuenta',
   standalone: true,
@@ -14,15 +19,46 @@ import { Usuario } from '../../models/usuario.models';
   templateUrl: './mi-cuenta.component.html',
   styleUrl: './mi-cuenta.component.scss'
 })
-export class MiCuentaComponent {
+export class MiCuentaComponent implements OnInit {
+  /**
+   * @description
+   * Formulario de datos personales del usuario
+   */
   miCuentaForm!: FormGroup;
+
+  /**
+   * @description
+   * Formulario para cambiar la contraseña del usuario
+   */
   cambiarContrasenaForm!: FormGroup;
+
+  /**
+   * @description
+   * Bandera que indica si el formulario de datos personales ha sido enviado
+   */
   enviadoDatosPersonales = false;
+
+  /**
+   * @description
+   * Bandera que indica si el formulario de cambiar contraseña ha sido enviado
+   */
   enviadoCambiarContrasena = false;
+
+  /**
+   * @description
+   * Bandera para controlar la visibilidad del carrito de compras
+   */
   carritoVisible: boolean = false;
 
+  /**
+   * @ignore
+   */
   constructor(private fb: FormBuilder, private localStorageService: LocalStorageService, private router: Router) { }
 
+  /**
+   * @description
+   * Inicializa el componente y configura los formularios
+   */
   ngOnInit(): void {
     this.miCuentaForm = this.fb.group({
       nombre: ['', { validators: [Validators.required, this.soloLetrasValidator()], updateOn: 'change' }],
@@ -40,20 +76,32 @@ export class MiCuentaComponent {
     this.obtenerDatosUsuario();
   }
 
+  /**
+   * @description
+   * Alterna la visibilidad del carrito de compras
+   */
   toggleCarrito() {
     this.carritoVisible = !this.carritoVisible;
   }
 
+  /**
+   * @description
+   * Cierra el carrito de compras
+   */
   closeCarrito() {
     this.carritoVisible = false;
   }
 
+  /**
+   * @description
+   * Guarda los datos personales del usuario si el formulario es válido
+   */
   onGuardarDatosPersonales(): void {
     this.enviadoDatosPersonales = true;
     if (this.miCuentaForm.valid) {
       const usuarioActivo: Usuario | null = this.localStorageService.obtenerUsuarioActivo();
       if (usuarioActivo) {
-        //Actualizar datos usuario
+        // Actualizar datos del usuario
         usuarioActivo.nombre = this.miCuentaForm.get('nombre')!.value;
         usuarioActivo.apellidos = this.miCuentaForm.get('apellidos')!.value;
         usuarioActivo.fechaNacimiento = this.miCuentaForm.get('fechaNacimiento')!.value;
@@ -78,6 +126,10 @@ export class MiCuentaComponent {
     }
   }
 
+  /**
+   * @description
+   * Guarda la nueva contraseña del usuario si el formulario es válido
+   */
   onGuardarNuevaContrasena(): void {
     this.enviadoCambiarContrasena = true;
     if (this.cambiarContrasenaForm.valid) {
@@ -86,18 +138,18 @@ export class MiCuentaComponent {
         const contrasenaActual = this.cambiarContrasenaForm.get('contrasenaActual')!.value;
         const nuevaContrasena = this.cambiarContrasenaForm.get('nuevaContrasena')!.value;
 
-        //Valida contraseña actual
+        // Valida contraseña actual
         if (contrasenaActual !== usuarioActivo.contrasena) {
           alert('La contraseña actual ingresada es incorrecta.');
           return;
         }
-        //Validar que la nueva contraseña no sea igual a la contraseña actual
+        // Validar que la nueva contraseña no sea igual a la contraseña actual
         if (nuevaContrasena === usuarioActivo.contrasena) {
           alert('La nueva contraseña debe ser distinta a la actual.');
           return;
         }
 
-        //Actualizar contraseña
+        // Actualizar contraseña
         usuarioActivo.contrasena = nuevaContrasena;
 
         this.localStorageService.setItem('usuarioActivo', JSON.stringify(usuarioActivo));
@@ -113,17 +165,20 @@ export class MiCuentaComponent {
         this.cambiarContrasenaForm.reset();
 
         alert('Contraseña actualizada correctamente.');
-
       } else {
         alert('No se encontró el usuario.');
       }
     }
   }
 
+  /**
+   * @description
+   * Obtiene los datos del usuario activo y los carga en los formularios
+   */
   obtenerDatosUsuario(): void {
     const usuarioActivo: Usuario | null = this.localStorageService.obtenerUsuarioActivo();
     if (usuarioActivo) {
-      //Cargar campos en Editar Datos Personales
+      // Cargar campos en Editar Datos Personales
       this.miCuentaForm.patchValue({
         nombre: usuarioActivo.nombre,
         apellidos: usuarioActivo.apellidos,
@@ -131,7 +186,7 @@ export class MiCuentaComponent {
         telefono: usuarioActivo.telefono,
         fechaNacimiento: usuarioActivo.fechaNacimiento
       });
-      //Cambiar Contraseña
+      // Cambiar Contraseña
       this.cambiarContrasenaForm.patchValue({
         contrasenaActual: '',
         nuevaContrasena: ''
@@ -142,6 +197,11 @@ export class MiCuentaComponent {
     }
   }
 
+  /**
+   * @description
+   * Alterna la visualización entre el formulario de datos personales y el formulario de cambiar contraseña
+   * @param formulario - El formulario a mostrar ('datos-personales' o 'cambiar-contrasena')
+   */
   toggleFormulario(formulario: string): void {
     const formularioDatosPersonales = document.getElementById('formulario-datos-personales');
     const formularioCambiarContrasena = document.getElementById('formulario-cambiar-contrasena');
@@ -155,6 +215,12 @@ export class MiCuentaComponent {
   }
 
   //#region Validaciones
+  /**
+   * @description
+   * Obtiene el mensaje de error para un control específico
+   * @param control - El control del formulario
+   * @returns El mensaje de error correspondiente
+   */
   getErrorMessage(control: AbstractControl | null): string {
     if (control?.errors) {
       if (control.errors['required']) {
@@ -165,6 +231,11 @@ export class MiCuentaComponent {
   }
 
   //#region Validación contraseña
+  /**
+   * @description
+   * Valida que la contraseña cumpla con los requisitos de longitud, mayúsculas y números
+   * @returns ValidatorFn
+   */
   validarContrasena(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const contrasena = control.value;
@@ -194,6 +265,11 @@ export class MiCuentaComponent {
     };
   }
 
+  /**
+   * @description
+   * Valida que la contraseña actual ingresada sea correcta
+   * @returns ValidatorFn
+   */
   validarContrasenaActual(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const contrasenaActual = control.value;
@@ -215,6 +291,12 @@ export class MiCuentaComponent {
   //#endregion
 
   //#region Validación edad
+  /**
+   * @description
+   * Calcula la edad basada en la fecha de nacimiento
+   * @param fechaNacimiento - La fecha de nacimiento
+   * @returns La edad calculada
+   */
   calcularEdad(fechaNacimiento: Date): number {
     const hoy = new Date();
     let edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
@@ -225,6 +307,12 @@ export class MiCuentaComponent {
     return edad;
   }
 
+  /**
+   * @description
+   * Valida que la edad del usuario sea mayor o igual a la edad mínima
+   * @param edadMinima - La edad mínima permitida
+   * @returns ValidatorFn
+   */
   validarEdad(edadMinima: number): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const fechaNacimiento = control.value;
@@ -242,6 +330,11 @@ export class MiCuentaComponent {
   //#endregion
 
   //#region Validaciones ingreso de texto y números
+  /**
+   * @description
+   * Valida que solo se ingresen letras en el campo
+   * @returns ValidatorFn
+   */
   soloLetrasValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const regex = /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s-]+$/;
@@ -253,17 +346,27 @@ export class MiCuentaComponent {
     };
   }
 
+  /**
+   * @description
+   * Valida que solo se ingresen caracteres alfanuméricos en el campo
+   * @returns ValidatorFn
+   */
   alphanumericoValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const regex = /^[a-zA-Z0-9áéíóúÁÉÍÓÚüÜñÑ\s-]+$/;
       if (control.value && !regex.test(control.value)) {
-        control.setValue(control.value.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚüÜñÑ\s-]/g, ''))
+        control.setValue(control.value.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚüÜñÑ\s-]/g, ''));
         return { alphanumerico: 'Sólo se permiten caracteres alfanuméricos' };
       }
       return null;
     };
   }
 
+  /**
+   * @description
+   * Valida que solo se ingresen números en el campo
+   * @returns ValidatorFn
+   */
   soloNumerosValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const regex = /^[0-9]+$/;
