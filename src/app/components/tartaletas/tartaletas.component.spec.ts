@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { TartaletasComponent } from './tartaletas.component';
+import { CommonModule } from '@angular/common';
+import { RouterModule, ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
 describe('TartaletasComponent', () => {
   let component: TartaletasComponent;
@@ -8,7 +10,20 @@ describe('TartaletasComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TartaletasComponent]
+      imports: [CommonModule, RouterModule, TartaletasComponent],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            params: of({}),
+            snapshot: {
+              paramMap: {
+                get: () => null
+              }
+            }
+          }
+        }
+      ]
     })
     .compileComponents();
 
@@ -17,7 +32,7 @@ describe('TartaletasComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('El componente TARTALETAS se crea correctamente', () => {
     expect(component).toBeTruthy();
   });
 });

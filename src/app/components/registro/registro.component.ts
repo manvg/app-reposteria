@@ -21,6 +21,7 @@ export class RegistroComponent implements OnInit {
   arrayUsuarios: Usuario[] = [];
   enviado = false;
   carritoVisible: boolean = false;
+  titulo: string = 'Formulario de Registro';
 
   constructor(private carritoService: CarritoService, private fb: FormBuilder, private router: Router, private localStorageService: LocalStorageService) {}
 

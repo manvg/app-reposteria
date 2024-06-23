@@ -51,6 +51,8 @@ export class TartaletasComponent {
     },
   ];
 
+  titulo: string = 'Tartaletas';
+
   carritoVisible: boolean = false;
 
   constructor(private carritoService: CarritoService) {}

@@ -50,6 +50,8 @@ export class CheesecakesComponent {
     },
   ];
 
+  titulo: string = 'Cheesecakes';
+
   carritoVisible: boolean = false;
 
   constructor(private carritoService: CarritoService) {}

@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { MiCuentaComponent } from './mi-cuenta.component';
+import { CommonModule } from '@angular/common';
+import { RouterModule, ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
 describe('MiCuentaComponent', () => {
   let component: MiCuentaComponent;
@@ -8,7 +10,20 @@ describe('MiCuentaComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MiCuentaComponent]
+      imports: [CommonModule, RouterModule, MiCuentaComponent],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            params: of({}),
+            snapshot: {
+              paramMap: {
+                get: () => null
+              }
+            }
+          }
+        }
+      ]
     })
     .compileComponents();
 
@@ -17,7 +32,7 @@ describe('MiCuentaComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('El componente MI-CUENTA se crea correctamente', () => {
     expect(component).toBeTruthy();
   });
 });

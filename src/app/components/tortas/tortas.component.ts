@@ -50,6 +50,8 @@ export class TortasComponent implements OnInit {
     },
   ];
 
+  titulo: string = 'Tortas';
+
   carritoVisible: boolean = false;
 
   constructor(private carritoService: CarritoService) {}

@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { RegistroComponent } from './registro.component';
+import { CommonModule } from '@angular/common';
+import { RouterModule, ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
 describe('RegistroComponent', () => {
   let component: RegistroComponent;
@@ -8,7 +10,20 @@ describe('RegistroComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RegistroComponent]
+      imports: [CommonModule, RouterModule, RegistroComponent],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            params: of({}),
+            snapshot: {
+              paramMap: {
+                get: () => null
+              }
+            }
+          }
+        }
+      ]
     })
     .compileComponents();
 
@@ -16,8 +31,7 @@ describe('RegistroComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
-
-  it('should create', () => {
+  it('El componente REGISTRO se crea correctamente', () => {
     expect(component).toBeTruthy();
   });
 });

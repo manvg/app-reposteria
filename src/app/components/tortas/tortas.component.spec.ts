@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { TortasComponent } from './tortas.component';
+import { CommonModule } from '@angular/common';
+import { RouterModule, ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
 describe('TortasComponent', () => {
   let component: TortasComponent;
@@ -8,7 +10,20 @@ describe('TortasComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TortasComponent]
+      imports: [CommonModule, RouterModule, TortasComponent],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            params: of({}),
+            snapshot: {
+              paramMap: {
+                get: () => null
+              }
+            }
+          }
+        }
+      ]
     })
     .compileComponents();
 
@@ -17,7 +32,7 @@ describe('TortasComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('El componente TORTAS se crea correctamente', () => {
     expect(component).toBeTruthy();
   });
 });

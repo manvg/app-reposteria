@@ -19,6 +19,7 @@ export class LoginComponent implements OnInit {
   enviado = false;
   loginError = '';
   carritoVisible: boolean = false;
+  titulo: string = 'Iniciar Sesión';
 
   constructor(private fb: FormBuilder, private router: Router, private localStorageService: LocalStorageService) { }
 
