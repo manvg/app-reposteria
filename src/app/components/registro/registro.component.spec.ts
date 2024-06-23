@@ -1,8 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RegistroComponent } from './registro.component';
 import { CommonModule } from '@angular/common';
-import { RouterModule, ActivatedRoute } from '@angular/router';
-import { ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { of } from 'rxjs';
 import { LocalStorageService } from '../../services/local-storage/local-storage.service';
 import { CarritoService } from '../../services/carrito/carrito.service';
@@ -31,9 +30,8 @@ describe('RegistroComponent', () => {
   RegistroComponent
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CommonModule, RouterModule, RegistroComponent],
+      imports: [CommonModule, RouterModule.forRoot([]), RegistroComponent],
       providers: [
-        {provide: ActivatedRoute,useValue: { params: of({}),snapshot: {paramMap: { get: () => null}}}},
         {provide: LocalStorageService, useValue: mockLocalStorageService },
         {provide: CarritoService, useValue: mockCarritoService }
       ],

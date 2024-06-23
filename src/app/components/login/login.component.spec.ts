@@ -10,20 +10,7 @@ describe('LoginComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CommonModule, RouterModule, LoginComponent],
-      providers: [
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            params: of({}),
-            snapshot: {
-              paramMap: {
-                get: () => null
-              }
-            }
-          }
-        }
-      ]
+      imports: [CommonModule, RouterModule.forRoot([]), LoginComponent]
     })
     .compileComponents();
 

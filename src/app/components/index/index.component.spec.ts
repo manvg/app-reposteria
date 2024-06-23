@@ -1,8 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { IndexComponent } from './index.component';
 import { CommonModule } from '@angular/common';
-import { RouterModule, ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
+import { RouterModule } from '@angular/router';
 
 describe('IndexComponent', () => {
   let component: IndexComponent;
@@ -10,20 +9,7 @@ describe('IndexComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CommonModule, RouterModule, IndexComponent],
-      providers: [
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            params: of({}),
-            snapshot: {
-              paramMap: {
-                get: () => null
-              }
-            }
-          }
-        }
-      ]
+      imports: [CommonModule, RouterModule.forRoot([]), IndexComponent]
     })
     .compileComponents();
 

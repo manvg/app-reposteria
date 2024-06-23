@@ -1,8 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { KuchensComponent } from './kuchens.component';
 import { CommonModule } from '@angular/common';
-import { RouterModule, ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
+import { RouterModule } from '@angular/router';
 
 describe('KuchensComponent', () => {
   let component: KuchensComponent;
@@ -10,20 +9,7 @@ describe('KuchensComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CommonModule, RouterModule, KuchensComponent],
-      providers: [
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            params: of({}),
-            snapshot: {
-              paramMap: {
-                get: () => null
-              }
-            }
-          }
-        }
-      ]
+      imports: [CommonModule, RouterModule.forRoot([]), KuchensComponent]
     })
     .compileComponents();
 

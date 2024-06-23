@@ -1,8 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MiCuentaComponent } from './mi-cuenta.component';
 import { CommonModule } from '@angular/common';
-import { RouterModule, ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
+import { RouterModule } from '@angular/router';
 
 describe('MiCuentaComponent', () => {
   let component: MiCuentaComponent;
@@ -10,20 +9,7 @@ describe('MiCuentaComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CommonModule, RouterModule, MiCuentaComponent],
-      providers: [
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            params: of({}),
-            snapshot: {
-              paramMap: {
-                get: () => null
-              }
-            }
-          }
-        }
-      ]
+      imports: [CommonModule, RouterModule.forRoot([]), MiCuentaComponent]
     })
     .compileComponents();
 

@@ -1,8 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CheesecakesComponent } from './cheesecakes.component';
 import { CommonModule } from '@angular/common';
-import { RouterModule, ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
+import { RouterModule } from '@angular/router';
 
 describe('CheesecakesComponent', () => {
   let component: CheesecakesComponent;
@@ -10,20 +9,7 @@ describe('CheesecakesComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CommonModule, RouterModule, CheesecakesComponent],
-      providers: [
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            params: of({}),
-            snapshot: {
-              paramMap: {
-                get: () => null
-              }
-            }
-          }
-        }
-      ]
+      imports: [CommonModule, RouterModule.forRoot([]), CheesecakesComponent]
     })
     .compileComponents();
 
