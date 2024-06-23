@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Usuario } from '../../models/usuario.models';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +9,7 @@ import { Usuario } from '../../models/usuario.models';
 export class LocalStorageService {
   private usuarioActualSubject: BehaviorSubject<Usuario | null>;
 
-  constructor() {
+  constructor(private router: Router) {
     const usuarioActivo = this.getItem('usuarioActivo');
     const usuario = usuarioActivo ? JSON.parse(usuarioActivo) : null;
     this.usuarioActualSubject = new BehaviorSubject<Usuario | null>(usuario);
@@ -76,6 +77,12 @@ export class LocalStorageService {
     }
     return [];
   }
+
+  obtenerUsuarioPorEmail(email: string): Usuario | null {
+    const listaUsuarios = this.obtenerUsuarios();
+    const usuarioLogin = listaUsuarios.find(user => user.email === email);
+    return usuarioLogin ? usuarioLogin : null;
+  }
   //#endregion
 
   //#region Login
@@ -91,10 +98,16 @@ export class LocalStorageService {
     this.removeItem('usuarioActivo');
     this.usuarioActualSubject.next(null);
     console.log("local-storage.service.ts => FIN => cerrarSesion");
+    this.router.navigate(['/login']);
   }
 
   get usuarioActual(): Usuario | null {
     return this.usuarioActualSubject.value;
+  }
+
+  obtenerUsuarioActivo(): Usuario | null {
+    const usuarioActivo = this.getItem('usuarioActivo');
+    return usuarioActivo ? JSON.parse(usuarioActivo) : null;
   }
   //#endregion
 }
