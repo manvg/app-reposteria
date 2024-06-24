@@ -135,6 +135,20 @@ export class LocalStorageService {
     const usuarioLogin = listaUsuarios.find(user => user.email === email);
     return usuarioLogin ? usuarioLogin : null;
   }
+
+  eliminarUsuario(email: string): void {
+    let usuarios = this.obtenerUsuarios();
+    usuarios = usuarios.filter(usuario => usuario.email !== email);
+    localStorage.setItem('usuarios', JSON.stringify(usuarios));
+  }
+  actualizarUsuario(usuarioActualizado: Usuario): void {
+    let usuarios = this.obtenerUsuarios();
+    const index = usuarios.findIndex(usuario => usuario.email === usuarioActualizado.email);
+    if (index !== -1) {
+      usuarios[index] = usuarioActualizado;
+      localStorage.setItem('usuarios', JSON.stringify(usuarios));
+    }
+  }
   //#endregion
 
   //#region Login

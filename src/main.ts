@@ -11,6 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { CommonModule, registerLocaleData } from '@angular/common';
 import localeEsCl from '@angular/common/locales/es-CL';
 import { LOCALE_ID } from '@angular/core';
+import { MatDialogModule } from '@angular/material/dialog';
 
 registerLocaleData(localeEsCl, 'es-CL');
 
@@ -19,7 +20,7 @@ bootstrapApplication(AppComponent, {
   providers: [
     provideRouter(routes),
     provideAnimationsAsync(),
-    importProvidersFrom(MatSnackBarModule, BrowserAnimationsModule, MatIconModule, CommonModule),
+    importProvidersFrom(MatSnackBarModule, BrowserAnimationsModule, MatIconModule, CommonModule, MatDialogModule),
     { provide: LOCALE_ID, useValue: 'es-CL' }
   ]
 })

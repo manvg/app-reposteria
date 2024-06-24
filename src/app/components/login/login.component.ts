@@ -108,7 +108,7 @@ export class LoginComponent implements OnInit {
         console.log('Iniciando sesión con usuario ' + usuarioLogin.email);
 
         if (usuarioLogin.perfil === 'admin') {
-          this.router.navigate(['/index']);
+          this.router.navigate(['/dashboard']);
         } else {
           this.router.navigate(['/mi-cuenta']);
         }

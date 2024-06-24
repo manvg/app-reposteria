@@ -8,6 +8,7 @@ import { CarritoService } from '../../services/carrito/carrito.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { Usuario } from '../../models/usuario.models';
 import { LocalStorageService } from '../../services/local-storage/local-storage.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 /**
  * @description
@@ -54,7 +55,8 @@ export class RegistroComponent implements OnInit {
   /**
    * @ignore
    */
-  constructor(private carritoService: CarritoService, private fb: FormBuilder, private router: Router, private localStorageService: LocalStorageService) {}
+  constructor(private carritoService: CarritoService, private fb: FormBuilder, private router: Router,
+              private localStorageService: LocalStorageService, private snackBar: MatSnackBar) {}
 
   /**
    * @description
@@ -100,7 +102,12 @@ export class RegistroComponent implements OnInit {
     if (this.formRegistro.valid) {
       const correo = this.formRegistro.get('correo')!.value;
       if (this.validarExistenciaUsuario(correo)) {
-        alert('Ya existe un usuario con este correo electrónico');
+        this.snackBar.open('Error | Ya existe un usuario con este correo electrónico.', 'Cerrar', {
+          duration: 3000,
+          verticalPosition: 'top',
+          horizontalPosition: 'right'
+        });
+
         return;
       }
 
@@ -121,7 +128,11 @@ export class RegistroComponent implements OnInit {
       this.formRegistro.reset();
       this.enviado = false;
 
-      alert('Se guardó correctamente el usuario');
+      this.snackBar.open('Éxito | Usuario creado correctamente.', 'Cerrar', {
+        duration: 3000,
+        verticalPosition: 'top',
+        horizontalPosition: 'right'
+      });
 
       console.log('Cantidad de usuarios DESPUÉS de guardar => ' + this.arrayUsuarios.length);
 

@@ -1,0 +1,14 @@
+.container {
+  background-color:  rgba(255, 255, 255, 0.8); /* Color de fondo blanco con 80% de opacidad */
+  padding: 20px;
+  border-radius: 8px; /* Opcional: Para dar bordes redondeados */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Opcional: Para agregar una sombra ligera */
+}
+
+.table {
+  margin-bottom: 0; /* Para evitar el margen inferior de la tabla */
+}
+
+h2 {
+  margin-top: 0; /* Para evitar el margen superior del encabezado */
+}
