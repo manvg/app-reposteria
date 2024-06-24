@@ -12,3 +12,32 @@
 h2 {
   margin-top: 0; /* Para evitar el margen superior del encabezado */
 }
+
+.action-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-danger {
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 5px 10px;
+}
+
+.btn-primary {
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 5px 10px;
+}
+
+.btn mat-icon {
+  margin-right: 5px;
+}

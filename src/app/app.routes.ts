@@ -8,6 +8,7 @@ import { RegistroComponent } from './components/registro/registro.component';
 import { LoginComponent } from './components/login/login.component';
 import { MiCuentaComponent } from './components/mi-cuenta/mi-cuenta.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { RecuperarContrasenaComponent } from './components/recuperar-contrasena/recuperar-contrasena.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/index', pathMatch: 'full' },
@@ -19,5 +20,6 @@ export const routes: Routes = [
   {path: 'registro', component: RegistroComponent},
   {path: 'login', component: LoginComponent},
   {path: 'mi-cuenta', component: MiCuentaComponent},
-  {path: 'dashboard', component: DashboardComponent}
+  {path: 'dashboard', component: DashboardComponent},
+  {path: 'recuperar-contrasena', component: RecuperarContrasenaComponent}
 ];

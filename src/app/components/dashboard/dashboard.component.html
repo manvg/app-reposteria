@@ -23,7 +23,7 @@
             <td>{{ usuario.apellidos }}</td>
             <td>{{ usuario.email }}</td>
             <td>{{ usuario.perfil }}</td>
-            <td>
+            <td class="action-buttons">
               <button *ngIf="usuario.perfil !== 'admin'" class="btn btn-danger" (click)="eliminarUsuario(usuario.email)">
                 <mat-icon>delete</mat-icon>
               </button>
