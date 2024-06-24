@@ -1,7 +1,8 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { CarritoService } from '../../services/carrito/carrito.service';
 import { Producto } from '../../models/producto.model';
-import { CommonModule } from '@angular/common';
+import { CommonModule, formatCurrency } from '@angular/common';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 /**
  * @description
@@ -40,7 +41,7 @@ export class CarritoComponent implements OnInit {
   /**
    * @ignore
    */
-  constructor(private carritoService: CarritoService) {}
+  constructor(private carritoService: CarritoService, private snackBar: MatSnackBar) {}
 
   /**
    * @description
@@ -77,5 +78,17 @@ export class CarritoComponent implements OnInit {
    */
   onCloseClick() {
     this.closeCarrito.emit();
+  }
+
+    /**
+   * @description
+   * Emite el evento para finalizar compra
+   */
+  finalizarCompra() {
+    this.snackBar.open('En mantenimiento  :(', 'Cerrar', {
+      duration: 3000,
+      verticalPosition: 'top',
+      horizontalPosition: 'right'
+    });
   }
 }

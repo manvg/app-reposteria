@@ -7,6 +7,7 @@ import { FooterComponent } from '../footer/footer.component';
 import { CarritoComponent } from '../carrito/carrito.component';
 import { LocalStorageService } from '../../services/local-storage/local-storage.service';
 import { Usuario } from '../../models/usuario.models';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 /**
  * @description
@@ -53,7 +54,7 @@ export class MiCuentaComponent implements OnInit {
   /**
    * @ignore
    */
-  constructor(private fb: FormBuilder, private localStorageService: LocalStorageService, private router: Router) { }
+  constructor(private fb: FormBuilder, private localStorageService: LocalStorageService, private router: Router, private snackBar: MatSnackBar) { }
 
   /**
    * @description
@@ -117,9 +118,18 @@ export class MiCuentaComponent implements OnInit {
           this.localStorageService.setItem('usuarios', JSON.stringify(usuarios));
         }
         this.enviadoDatosPersonales = false;
-        alert('Datos personales actualizados correctamente.');
+
+        this.snackBar.open('Éxito | Datos actualizados correctamente.', 'Cerrar', {
+          duration: 3000,
+          verticalPosition: 'top',
+          horizontalPosition: 'right'
+        });
       } else {
-        alert('No se encontró el usuario activo.');
+        this.snackBar.open('Error | No se encontró el usuario activo.', 'Cerrar', {
+          duration: 3000,
+          verticalPosition: 'top',
+          horizontalPosition: 'right'
+        });
       }
     } else {
       this.miCuentaForm.markAllAsTouched();
@@ -140,12 +150,20 @@ export class MiCuentaComponent implements OnInit {
 
         // Valida contraseña actual
         if (contrasenaActual !== usuarioActivo.contrasena) {
-          alert('La contraseña actual ingresada es incorrecta.');
+          this.snackBar.open('Error | La contraseña actual ingresada es incorrecta.', 'Cerrar', {
+            duration: 3000,
+            verticalPosition: 'top',
+            horizontalPosition: 'right'
+          });
           return;
         }
         // Validar que la nueva contraseña no sea igual a la contraseña actual
         if (nuevaContrasena === usuarioActivo.contrasena) {
-          alert('La nueva contraseña debe ser distinta a la actual.');
+          this.snackBar.open('Error | La nueva contraseña debe ser distinta a la actual.', 'Cerrar', {
+            duration: 3000,
+            verticalPosition: 'top',
+            horizontalPosition: 'right'
+          });
           return;
         }
 
@@ -164,9 +182,17 @@ export class MiCuentaComponent implements OnInit {
         this.enviadoCambiarContrasena = false;
         this.cambiarContrasenaForm.reset();
 
-        alert('Contraseña actualizada correctamente.');
+        this.snackBar.open('Éxito | Contraseña actualizada correctamente.', 'Cerrar', {
+          duration: 3000,
+          verticalPosition: 'top',
+          horizontalPosition: 'right'
+        });
       } else {
-        alert('No se encontró el usuario.');
+        this.snackBar.open('Error | No se encontró el usuario.', 'Cerrar', {
+          duration: 3000,
+          verticalPosition: 'top',
+          horizontalPosition: 'right'
+        });
       }
     }
   }
