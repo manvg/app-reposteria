@@ -12,14 +12,14 @@ import { RecuperarContrasenaComponent } from './components/recuperar-contrasena/
 
 export const routes: Routes = [
   { path: '', redirectTo: '/index', pathMatch: 'full' },
-  {path: 'index', component: IndexComponent},
-  {path: 'tortas', component: TortasComponent},
-  {path: 'cheesecakes', component: CheesecakesComponent},
-  {path: 'kuchens', component: KuchensComponent},
-  {path: 'tartaletas', component: TartaletasComponent},
-  {path: 'registro', component: RegistroComponent},
-  {path: 'login', component: LoginComponent},
-  {path: 'mi-cuenta', component: MiCuentaComponent},
-  {path: 'dashboard', component: DashboardComponent},
-  {path: 'recuperar-contrasena', component: RecuperarContrasenaComponent}
+  { path: 'index', component: IndexComponent },
+  { path: 'tortas', component: TortasComponent },
+  { path: 'cheesecakes', component: CheesecakesComponent },
+  { path: 'kuchens', component: KuchensComponent },
+  { path: 'tartaletas', component: TartaletasComponent },
+  { path: 'registro', component: RegistroComponent },
+  { path: 'login', component: LoginComponent },
+  { path: 'mi-cuenta', component: MiCuentaComponent },
+  { path: 'dashboard', component: DashboardComponent },
+  { path: 'recuperar-contrasena', component: RecuperarContrasenaComponent }
 ];
