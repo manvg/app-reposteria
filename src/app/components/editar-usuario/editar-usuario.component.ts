@@ -7,6 +7,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { StorageService } from '../../services/storage/storage.service';
 
 @Component({
   selector: 'app-editar-usuario',
@@ -21,7 +23,8 @@ export class EditarUsuarioComponent {
   constructor(
     public dialogRef: MatDialogRef<EditarUsuarioComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { usuario: Usuario },
-    private fb: FormBuilder
+    private fb: FormBuilder,private storageService: StorageService,
+    private snackBar: MatSnackBar
   ) {
     this.form = this.fb.group({
       nombre: [data.usuario.nombre, Validators.required],
@@ -35,7 +38,7 @@ export class EditarUsuarioComponent {
     this.dialogRef.close();
   }
 
-  onSaveClick(): void {
+  async onSaveClick(): Promise<void> {
     if (this.form.valid) {
       const updatedUser: Usuario = {
         ...this.data.usuario,
@@ -43,7 +46,22 @@ export class EditarUsuarioComponent {
         apellidos: this.form.get('apellidos')?.value,
         perfil: this.form.get('perfil')?.value
       };
-      this.dialogRef.close(updatedUser);
+
+      try {
+        await this.storageService.actualizarUsuario(updatedUser);
+        this.dialogRef.close(updatedUser);
+        this.snackBar.open('Usuario actualizado correctamente.', 'Cerrar', {
+          duration: 3000,
+          verticalPosition: 'top',
+          horizontalPosition: 'right'
+        });
+      } catch (error) {
+        this.snackBar.open('Error al actualizar el usuario.', 'Cerrar', {
+          duration: 3000,
+          verticalPosition: 'top',
+          horizontalPosition: 'right'
+        });
+      }
     }
   }
 }

@@ -2,7 +2,7 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { CarritoService } from '../../services/carrito/carrito.service';
-import { LocalStorageService } from '../../services/local-storage/local-storage.service';
+import { StorageService } from '../../services/storage/storage.service';
 import { Usuario } from '../../models/usuario.models';
 
 /**
@@ -46,7 +46,7 @@ export class MenuComponent implements OnInit {
   /**
    * @ignore
    */
-  constructor(private carritoService: CarritoService, private localStorageService: LocalStorageService) {}
+  constructor(private carritoService: CarritoService, private storageService: StorageService) {}
 
   /**
    * @description
@@ -56,7 +56,7 @@ export class MenuComponent implements OnInit {
     this.carritoService.contadorCarrito$.subscribe(contador => {
       this.contadorCarrito = contador;
     });
-    this.localStorageService.usuarioActual$.subscribe(usuario => {
+    this.storageService.usuarioActual$.subscribe(usuario => {
       this.usuarioActual = usuario;
     });
   }
@@ -73,7 +73,7 @@ export class MenuComponent implements OnInit {
    * @description
    * Cierra la sesión del usuario actual
    */
-  cerrarSesion() {
-    this.localStorageService.cerrarSesion();
+  async cerrarSesion() {
+    await this.storageService.cerrarSesion();
   }
 }

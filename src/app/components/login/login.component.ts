@@ -5,21 +5,22 @@ import { CommonModule } from '@angular/common';
 import { MenuComponent } from '../menu/menu.component';
 import { FooterComponent } from '../footer/footer.component';
 import { CarritoComponent } from '../carrito/carrito.component';
-import { LocalStorageService } from '../../services/local-storage/local-storage.service';
+import { StorageService } from '../../services/storage/storage.service';
+import { Usuario } from '../../models/usuario.models';
 
 /**
  * @description
  * Componente de login que permite a los usuarios autenticarse en la aplicación.
  * Este componente incluye un formulario reactivo con validaciones para los campos
  * de correo electrónico y contraseña, y maneja la lógica de autenticación utilizando
- * un servicio de almacenamiento local.
+ * un servicio de almacenamiento.
  */
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [CommonModule, RouterModule, ReactiveFormsModule, MenuComponent, FooterComponent, CarritoComponent],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.scss'
+  styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
   /**
@@ -55,7 +56,7 @@ export class LoginComponent implements OnInit {
   /**
    * @ignore
    */
-  constructor(private fb: FormBuilder, private router: Router, private localStorageService: LocalStorageService) { }
+  constructor(private fb: FormBuilder, private router: Router, private storageService: StorageService) { }
 
   /**
    * @description
@@ -90,39 +91,47 @@ export class LoginComponent implements OnInit {
    * Maneja el proceso de inicio de sesión, validando las credenciales
    * y redirigiendo al usuario según su perfil
    */
-  iniciarSesion() {
+  async iniciarSesion() {
     console.log('Comienza inicio sesión...');
     this.enviado = true;
     if (this.formLogin.valid) {
       const email = this.formLogin.get('email')!.value;
       const contrasena = this.formLogin.get('contrasena')!.value;
 
-      // Validar credenciales contra usuario de localStorage
-      const usuarios = this.localStorageService.obtenerUsuarios();
-      const usuarioLogin = usuarios.find(user => user.email === email && user.contrasena === contrasena);
+      try {
+        // Validar credenciales contra usuario de Firebase Realtime Database
+        const usuarios = await this.storageService.obtenerUsuarios();
+        if (usuarios) {
+          console.log('Usuarios obtenidos:', usuarios);
+          const usuarioLogin = usuarios.find(user => user && user.email === email && user.contrasena === contrasena);
+          if (usuarioLogin) {
+            console.log('Usuario encontrado:', usuarioLogin);
+            await this.storageService.iniciarSesion(usuarioLogin);
+            console.log('Iniciando sesión con usuario', usuarioLogin.email);
 
-      console.log('iniciarSesion => usuarioLogin => ' + usuarioLogin?.email);
-
-      if (usuarioLogin) {
-        this.localStorageService.iniciarSesion(usuarioLogin);
-        console.log('Iniciando sesión con usuario ' + usuarioLogin.email);
-
-        if (usuarioLogin.perfil === 'admin') {
-          this.router.navigate(['/dashboard']);
+            if (usuarioLogin.perfil === 'admin') {
+              this.router.navigate(['/dashboard']);
+            } else {
+              this.router.navigate(['/mi-cuenta']);
+            }
+          } else {
+            this.loginError = 'Correo o contraseña incorrectos';
+          }
         } else {
-          this.router.navigate(['/mi-cuenta']);
+          this.loginError = 'No se pudieron obtener los usuarios';
         }
-      } else {
-        this.loginError = 'Correo o contraseña incorrectos';
+      } catch (error) {
+        console.error('Error durante el inicio de sesión:', error);
+        this.loginError = 'Hubo un error durante el inicio de sesión. Por favor, inténtelo de nuevo más tarde.';
       }
     }
   }
 
   /**
    * @description
-   * Lista los usuarios guardados en el servicio de almacenamiento local
+   * Lista los usuarios guardados en el servicio de almacenamiento
    */
   listarUsuariosGuardados() {
-    this.localStorageService.listarUsuarios();
+    this.storageService.listarUsuarios();
   }
 }

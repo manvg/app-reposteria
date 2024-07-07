@@ -5,7 +5,7 @@ import { MenuComponent } from '../menu/menu.component';
 import { FooterComponent } from '../footer/footer.component';
 import { CarritoComponent } from '../carrito/carrito.component';
 import { CarritoService } from '../../services/carrito/carrito.service';
-import { LocalStorageService } from '../../services/local-storage/local-storage.service';
+import { StorageService } from '../../services/storage/storage.service';
 import { Usuario } from '../../models/usuario.models';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -32,7 +32,7 @@ export class DashboardComponent {
 
   constructor(
     private carritoService: CarritoService,
-    private localStorageService: LocalStorageService,
+    private storageService: StorageService,
     private snackBar: MatSnackBar,
     private dialog: MatDialog // Inyectar MatDialog
   ) { }
@@ -49,12 +49,12 @@ export class DashboardComponent {
     this.carritoVisible = false;
   }
 
-  obtenerUsuarios(): void {
-    this.usuarios = this.localStorageService.obtenerUsuarios();
+  async obtenerUsuarios(): Promise<void> {
+    this.usuarios = await this.storageService.obtenerUsuarios();
   }
 
-  eliminarUsuario(email: string): void {
-    this.localStorageService.eliminarUsuario(email);
+  async eliminarUsuario(email: string): Promise<void> {
+    await this.storageService.eliminarUsuario(email);
     this.obtenerUsuarios();
 
     this.snackBar.open('Éxito | Usuario eliminado correctamente.', 'Cerrar', {
@@ -70,9 +70,9 @@ export class DashboardComponent {
       data: { usuario }
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe(async result => {
       if (result) {
-        this.localStorageService.actualizarUsuario(result);
+        await this.storageService.actualizarUsuario(result);
         this.obtenerUsuarios(); // Actualizar la lista de usuarios
 
         this.snackBar.open('Éxito | Usuario actualizado correctamente.', 'Cerrar', {
