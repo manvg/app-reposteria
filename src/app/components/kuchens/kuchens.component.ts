@@ -6,6 +6,7 @@ import { FooterComponent } from '../footer/footer.component';
 import { CarritoComponent } from '../carrito/carrito.component';
 import { CarritoService } from '../../services/carrito/carrito.service';
 import { Producto } from '../../models/producto.model';
+import { StorageService } from '../../services/storage/storage.service';
 
 /**
  * @description
@@ -19,44 +20,7 @@ import { Producto } from '../../models/producto.model';
   styleUrl: './kuchens.component.scss'
 })
 export class KuchensComponent implements OnInit {
-  /**
-   * @description
-   * Lista de productos de la categoría 'Kuchens'
-   */
-  productos = [
-    {
-      id_producto: '9',
-      imagen: 'assets/images/kuchen/kuchen_aleman.PNG',
-      titulo: 'Alemán',
-      descripcion: 'Alemán',
-      precio: '12.000',
-      cantidad: 0
-    },
-    {
-      id_producto: '10',
-      imagen: 'assets/images/kuchen/kuchen_frutilla.PNG',
-      titulo: 'Frutilla',
-      descripcion: 'Frutilla',
-      precio: '15.000',
-      cantidad: 0
-    },
-    {
-      id_producto: '11',
-      imagen: 'assets/images/kuchen/kuchen_nuez.PNG',
-      titulo: 'Nuez',
-      descripcion: 'Nuez',
-      precio: '15.000',
-      cantidad: 0
-    },
-    {
-      id_producto: '12',
-      imagen: 'assets/images/kuchen/kuchen_sureño.PNG',
-      titulo: 'Sureño',
-      descripcion: 'Sureño',
-      precio: '18.000',
-      cantidad: 0
-    },
-  ];
+  productos: Producto[] = [];
 
   /**
    * @description
@@ -73,13 +37,25 @@ export class KuchensComponent implements OnInit {
   /**
    * @ignore
    */
-  constructor(private carritoService: CarritoService) {}
+  constructor(private carritoService: CarritoService, private storageService: StorageService) {}
 
   /**
    * @description
    * Inicializa el componente
    */
-  ngOnInit(): void {}
+  ngOnInit() {
+    this.obtenerProductos();
+  }
+
+   /**
+   * @description
+   * Obtiene los productos desde el servicio de almacenamiento
+   */
+   obtenerProductos() {
+    this.storageService.getJsonData().subscribe((data: { [key: string]: Producto }) => {
+      this.productos = Object.values(data).filter((producto: Producto) => producto.categoria === 'kuchen');
+    });
+  }
 
   /**
    * @description

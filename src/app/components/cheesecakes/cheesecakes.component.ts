@@ -6,6 +6,7 @@ import { FooterComponent } from '../footer/footer.component';
 import { CarritoComponent } from '../carrito/carrito.component';
 import { CarritoService } from '../../services/carrito/carrito.service';
 import { Producto } from '../../models/producto.model';
+import { StorageService } from '../../services/storage/storage.service';
 
 /**
  * @description
@@ -20,44 +21,7 @@ import { Producto } from '../../models/producto.model';
   styleUrl: './cheesecakes.component.scss'
 })
 export class CheesecakesComponent implements OnInit {
-  /**
-   * @description
-   * Lista de productos de la categoría 'Cheesecakes'
-   */
-  productos = [
-    {
-      id_producto: '5',
-      imagen: 'assets/images/cheesecake/cheesecacke_frambuesa.PNG',
-      titulo: 'Frambuesa',
-      descripcion: 'Frambuesa',
-      precio: '15.000',
-      cantidad: 0
-    },
-    {
-      id_producto: '6',
-      imagen: 'assets/images/cheesecake/cheesecacke_horneado_frutos_rojos.PNG',
-      titulo: 'Frutos rojos',
-      descripcion: 'Frutos rojos',
-      precio: '15.000',
-      cantidad: 0
-    },
-    {
-      id_producto: '7',
-      imagen: 'assets/images/cheesecake/cheesecacke_maracuya.PNG',
-      titulo: 'Maracuyá',
-      descripcion: 'Maracuyá',
-      precio: '18.000',
-      cantidad: 0
-    },
-    {
-      id_producto: '8',
-      imagen: 'assets/images/cheesecake/cheesecacke_mermelada_frutilla.PNG',
-      titulo: 'Mermelada frutilla',
-      descripcion: 'Mermelada frutilla',
-      precio: '18.000',
-      cantidad: 0
-    },
-  ];
+  productos: Producto[] = [];
 
   /**
    * @description
@@ -74,13 +38,25 @@ export class CheesecakesComponent implements OnInit {
   /**
    * @ignore
    */
-  constructor(private carritoService: CarritoService) {}
+  constructor(private carritoService: CarritoService, private storageService: StorageService) {}
 
   /**
    * @description
    * Inicializa el componente
    */
-  ngOnInit(): void {}
+  ngOnInit() {
+    this.obtenerProductos();
+  }
+
+   /**
+   * @description
+   * Obtiene los productos desde el servicio de almacenamiento
+   */
+   obtenerProductos() {
+    this.storageService.getJsonData().subscribe((data: { [key: string]: Producto }) => {
+      this.productos = Object.values(data).filter((producto: Producto) => producto.categoria === 'cheesecake');
+    });
+  }
 
   /**
    * @description

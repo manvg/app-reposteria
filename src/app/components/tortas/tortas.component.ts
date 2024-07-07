@@ -6,6 +6,7 @@ import { FooterComponent } from '../footer/footer.component';
 import { CarritoComponent } from '../carrito/carrito.component';
 import { CarritoService } from '../../services/carrito/carrito.service';
 import { Producto } from '../../models/producto.model';
+import { StorageService } from '../../services/storage/storage.service';
 
 /**
  * @description
@@ -16,47 +17,10 @@ import { Producto } from '../../models/producto.model';
   standalone: true,
   imports: [CommonModule, RouterModule, MenuComponent, FooterComponent, CarritoComponent],
   templateUrl: './tortas.component.html',
-  styleUrl: './tortas.component.scss'
+  styleUrls: ['./tortas.component.scss']
 })
 export class TortasComponent implements OnInit {
-  /**
-   * @description
-   * Lista de productos de la categoría 'Tortas'
-   */
-  productos = [
-    {
-      id_producto: '1',
-      imagen: 'assets/images/tortas/torta_amor.PNG',
-      titulo: 'Bizcocho amor',
-      descripcion: 'Torta de bizcocho',
-      precio: '20.000',
-      cantidad: 0
-    },
-    {
-      id_producto: '2',
-      imagen: 'assets/images/tortas/torta_bizcocho_rellena_manja_trozos_durazno_cubierta_ganache_chocolate.PNG',
-      titulo: 'Bizcocho manjar cubierta chocolate',
-      descripcion: 'Bizcocho manjar cubierta chocolate',
-      precio: '23.000',
-      cantidad: 0
-    },
-    {
-      id_producto: '3',
-      imagen: 'assets/images/tortas/torta_hojarasca_manjar_nuez.PNG',
-      titulo: 'Hojarasca manjar nuez',
-      descripcion: 'Hojarasca manjar nuez',
-      precio: '28.000',
-      cantidad: 0
-    },
-    {
-      id_producto: '4',
-      imagen: 'assets/images/tortas/torta_manjar_durazno_dragon_ball_z.PNG',
-      titulo: 'Bizcocho amor',
-      descripcion: 'Manjar durazno - Temática',
-      precio: '25.000',
-      cantidad: 0
-    },
-  ];
+  productos: Producto[] = [];
 
   /**
    * @description
@@ -73,13 +37,25 @@ export class TortasComponent implements OnInit {
   /**
    * @ignore
    */
-  constructor(private carritoService: CarritoService) {}
+  constructor(private carritoService: CarritoService, private storageService: StorageService) {}
 
   /**
    * @description
    * Inicializa el componente
    */
-  ngOnInit() {}
+  ngOnInit() {
+    this.obtenerProductos();
+  }
+
+  /**
+   * @description
+   * Obtiene los productos desde el servicio de almacenamiento
+   */
+  obtenerProductos() {
+    this.storageService.getJsonData().subscribe((data: { [key: string]: Producto }) => {
+      this.productos = Object.values(data).filter((producto: Producto) => producto.categoria === 'tortas');
+    });
+  }
 
   /**
    * @description

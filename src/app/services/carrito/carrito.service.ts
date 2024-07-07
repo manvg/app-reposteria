@@ -65,8 +65,10 @@ export class CarritoService {
     } else {
       console.log('carrito.service.ts => agregando producto al array...');
       const infoProducto: Producto = {
+        categoria: producto.categoria,
         imagen: producto.imagen,
         titulo: producto.titulo,
+        descricion: producto.descricion,
         precio: producto.precio.replace('$', '').replace(/\./g, ''),
         id_producto: producto.id_producto,
         cantidad: 1

@@ -6,6 +6,7 @@ import { FooterComponent } from '../footer/footer.component';
 import { CarritoComponent } from '../carrito/carrito.component';
 import { CarritoService } from '../../services/carrito/carrito.service';
 import { Producto } from '../../models/producto.model';
+import { StorageService } from '../../services/storage/storage.service';
 
 /**
  * @description
@@ -19,44 +20,7 @@ import { Producto } from '../../models/producto.model';
   styleUrl: './tartaletas.component.scss'
 })
 export class TartaletasComponent {
-  /**
-   * @description
-   * Lista de productos de la categoría 'Tartaletas'
-   */
-  productos = [
-    {
-      id_producto: '13',
-      imagen: 'assets/images/tartaletas/tartaleta_durazno.PNG',
-      titulo: 'Durazno',
-      descripcion: 'Durazno',
-      precio: '15.000',
-      cantidad: 0
-    },
-    {
-      id_producto: '14',
-      imagen: 'assets/images/tartaletas/tartaleta_kiwi_durazno.PNG',
-      titulo: 'Kiwi durazno',
-      descripcion: 'Kiwi durazno',
-      precio: '15.000',
-      cantidad: 0
-    },
-    {
-      id_producto: '15',
-      imagen: 'assets/images/tartaletas/tartaleta_frutilla.PNG',
-      titulo: 'Frutilla',
-      descripcion: 'Frutilla',
-      precio: '15.000',
-      cantidad: 0
-    },
-    {
-      id_producto: '16',
-      imagen: 'assets/images/tartaletas/tartaleta_3.PNG',
-      titulo: 'Damasco',
-      descripcion: 'Damasco',
-      precio: '18.000',
-      cantidad: 0
-    },
-  ];
+  productos: Producto[] = [];
 
   /**
    * @description
@@ -73,13 +37,25 @@ export class TartaletasComponent {
   /**
    * @ignore
    */
-  constructor(private carritoService: CarritoService) {}
+  constructor(private carritoService: CarritoService, private storageService: StorageService) {}
 
   /**
    * @description
    * Inicializa el componente
    */
-  ngOnInit() {}
+  ngOnInit() {
+    this.obtenerProductos();
+  }
+
+  /**
+   * @description
+   * Obtiene los productos desde el servicio de almacenamiento
+   */
+  obtenerProductos() {
+    this.storageService.getJsonData().subscribe((data: { [key: string]: Producto }) => {
+      this.productos = Object.values(data).filter((producto: Producto) => producto.categoria === 'tartaletas');
+    });
+  }
 
   /**
    * @description
