@@ -73,9 +73,17 @@ export class MiCuentaComponent implements OnInit {
     });
 
     this.cambiarContrasenaForm = this.fb.group({
-      contrasenaActual: ['', [Validators.required, this.validarContrasenaActual()]],
-      nuevaContrasena: ['', { validators: [Validators.required, this.validarContrasena()], updateOn: 'change' }]
+      contrasenaActual: ['', {
+        validators: [Validators.required],
+        asyncValidators: [this.validarContrasenaActual()],
+        updateOn: 'blur'
+      }],
+      nuevaContrasena: ['', {
+        validators: [Validators.required, this.validarContrasena()],
+        updateOn: 'change'
+      }]
     });
+
 
     this.obtenerDatosUsuario();
   }
@@ -196,8 +204,26 @@ async onGuardarNuevaContrasena(): Promise<void> {
         horizontalPosition: 'right'
       });
     }
+  } else {
+    // Depuración: Mostrar errores de validación
+    this.cambiarContrasenaForm.markAllAsTouched();
+    const errors = this.cambiarContrasenaForm.errors;
+    console.log('Errores en el formulario de cambiar contraseña:', errors);
+    if (this.cambiarContrasenaForm.get('contrasenaActual')?.invalid) {
+      console.log('Error en el campo contrasenaActual:', JSON.stringify(this.cambiarContrasenaForm.get('contrasenaActual')?.errors));
+    }
+    if (this.cambiarContrasenaForm.get('nuevaContrasena')?.invalid) {
+      console.log('Error en el campo nuevaContrasena:', JSON.stringify(this.cambiarContrasenaForm.get('nuevaContrasena')?.errors));
+    }
+    this.snackBar.open('Error | Por favor revisa los campos e intenta nuevamente.', 'Cerrar', {
+      duration: 3000,
+      verticalPosition: 'top',
+      horizontalPosition: 'right'
+    });
   }
 }
+
+
 
 /**
  * @description
@@ -287,6 +313,7 @@ validarContrasena(): ValidatorFn {
   };
 }
 
+
 /**
  * @description
  * Valida que la contraseña actual ingresada sea correcta
@@ -304,15 +331,18 @@ validarContrasenaActual(): AsyncValidatorFn {
 
     return from(this.storageService.obtenerUsuarioActivo()).pipe(
       map(usuarioActivo => {
-        const errors: ValidationErrors = {};
         if (usuarioActivo && contrasenaActual !== usuarioActivo.contrasena) {
-          errors['validarContrasenaActual'] = 'Contraseña actual incorrecta.';
+          return { validarContrasenaActual: true };
         }
-        return Object.keys(errors).length ? errors : null;
+        return null;
       })
     );
   };
 }
+
+
+
+
 //#endregion
 
 //#region Validación edad

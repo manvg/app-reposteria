@@ -102,11 +102,12 @@ export class StorageService {
   }
 
   async obtenerUsuarios(): Promise<Usuario[]> {
-    const listaUsuarios = await this.getItem('usuarios');
-    if (listaUsuarios) {
-      return JSON.parse(listaUsuarios);
+    const listaUsuariosStr = await this.getItem('usuarios');
+    let listaUsuarios: Usuario[] = [];
+    if (listaUsuariosStr) {
+      listaUsuarios = JSON.parse(listaUsuariosStr).filter((user: Usuario | null) => user !== null);
     }
-    return [];
+    return listaUsuarios;
   }
 
   async obtenerUsuarioPorEmail(email: string): Promise<Usuario | null> {

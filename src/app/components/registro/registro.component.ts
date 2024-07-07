@@ -7,7 +7,7 @@ import { CarritoComponent } from '../carrito/carrito.component';
 import { CarritoService } from '../../services/carrito/carrito.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { Usuario } from '../../models/usuario.models';
-import { LocalStorageService } from '../../services/local-storage/local-storage.service';
+import { StorageService } from '../../services/storage/storage.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 /**
@@ -56,7 +56,7 @@ export class RegistroComponent implements OnInit {
    * @ignore
    */
   constructor(private carritoService: CarritoService, private fb: FormBuilder, private router: Router,
-              private localStorageService: LocalStorageService, private snackBar: MatSnackBar) {}
+    private storageService: StorageService, private snackBar: MatSnackBar) {}
 
   /**
    * @description
@@ -95,13 +95,13 @@ export class RegistroComponent implements OnInit {
   /**
    * @description
    * Maneja el proceso de registro de usuario, validando los datos
-   * y guardando el nuevo usuario en el almacenamiento local
+   * y guardando el nuevo usuario en el almacenamiento de Firebase
    */
-  formularioRegistro() {
+  async formularioRegistro() {
     this.enviado = true;
     if (this.formRegistro.valid) {
       const correo = this.formRegistro.get('correo')!.value;
-      if (this.validarExistenciaUsuario(correo)) {
+      if (await this.validarExistenciaUsuario(correo)) {
         this.snackBar.open('Error | Ya existe un usuario con este correo electrónico.', 'Cerrar', {
           duration: 3000,
           verticalPosition: 'top',
@@ -124,7 +124,7 @@ export class RegistroComponent implements OnInit {
 
       console.log('Cantidad de usuarios ANTES de guardar => ' + this.arrayUsuarios.length);
       this.arrayUsuarios.push(nuevoUsuario);
-      this.guardarUsuarios();
+      await this.guardarUsuarios();
       this.formRegistro.reset();
       this.enviado = false;
 
@@ -158,22 +158,22 @@ export class RegistroComponent implements OnInit {
 
   /**
    * @description
-   * Guarda el array de usuarios en el almacenamiento local
+   * Guarda el array de usuarios en Firebase
    */
-  guardarUsuarios() {
-    this.localStorageService.setItem('usuarios', JSON.stringify(this.arrayUsuarios));
+  async guardarUsuarios() {
+    await this.storageService.setItem('usuarios', JSON.stringify(this.arrayUsuarios));
     console.log('guardarUsuarios() => ok');
   }
 
   /**
    * @description
-   * Carga los usuarios del almacenamiento local
+   * Carga los usuarios desde Firebase
    */
-  cargarUsuarios() {
-    const usuariosGuardados = this.localStorageService.getItem('usuarios');
+  async cargarUsuarios() {
+    const usuariosGuardados = await this.storageService.getItem('usuarios');
     if (usuariosGuardados) {
       this.arrayUsuarios = JSON.parse(usuariosGuardados);
-      console.log('Se cargaron los siguientes usuarios en localStorage: ');
+      console.log('Se cargaron los siguientes usuarios desde Firebase: ');
       this.arrayUsuarios.forEach(element => {
         console.log('Usuario ' + element.email);
       });
@@ -186,7 +186,7 @@ export class RegistroComponent implements OnInit {
    * @description
    * Crea un usuario administrador por defecto si no hay usuarios guardados
    */
-  crearUsuarioAdmin() {
+  async crearUsuarioAdmin() {
     const usuarioAdmin: Usuario = {
       nombre: 'Manuel',
       apellidos: 'Valdés Guerra',
@@ -199,7 +199,7 @@ export class RegistroComponent implements OnInit {
     };
 
     this.arrayUsuarios.push(usuarioAdmin);
-    this.localStorageService.setItem('usuarios', JSON.stringify(this.arrayUsuarios));
+    await this.storageService.setItem('usuarios', JSON.stringify(this.arrayUsuarios));
     console.log('Usuario administrador creado');
   }
 
@@ -209,8 +209,13 @@ export class RegistroComponent implements OnInit {
    * @param correo - El correo a validar
    * @returns true si el usuario ya existe, false en caso contrario
    */
-  validarExistenciaUsuario(correo: string): boolean {
-    return this.arrayUsuarios.some(usuario => usuario.email === correo);
+  async validarExistenciaUsuario(correo: string): Promise<boolean> {
+    const usuariosGuardados = await this.storageService.getItem('usuarios');
+    if (usuariosGuardados) {
+      const usuarios = JSON.parse(usuariosGuardados);
+      return usuarios.some((usuario: Usuario) => usuario.email === correo);
+    }
+    return false;
   }
 
   //#region Validación contrasena
