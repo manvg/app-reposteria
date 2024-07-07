@@ -13,7 +13,7 @@
         <img class="card-img-top" [src]="producto.imagen" [alt]="producto.titulo">
         <div class="card-body">
           <h6 class="card-title">{{producto.titulo}}</h6>
-          <p class="card-text">${{producto.precio}}</p>
+          <p class="card-text">${{(producto.precio|  number:'1.0-0')?.replace(',', '.')}}</p>
           <button class="btn btn-primary" (click)="agregarProducto(producto)">Añadir al carrito</button>
         </div>
       </div>
